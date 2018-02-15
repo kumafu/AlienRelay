@@ -3,7 +3,7 @@
 
 const express = require("express");
 
-const hostname = "0.0.0.0"
+const hostname = "0.0.0.0";
 const port = 8080;
 
 module.exports = class RelayServer {
