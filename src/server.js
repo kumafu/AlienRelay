@@ -20,6 +20,7 @@ module.exports = class RelayServer {
 
     this.server.listen(port, hostname);
     console.log(`Server running at http://${hostname}:${port}`);
+    return true;
   }
 
 };
