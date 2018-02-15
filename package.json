@@ -1,0 +1,13 @@
+{
+  "name": "alienrelay",
+  "version": "0.0.1",
+  "description": "The simple software for Alien RFID terminal",
+  "author": "kumafu",
+  "main": "alienrelay.js",
+  "scripts": {
+    "start": "node alienrelay.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}
