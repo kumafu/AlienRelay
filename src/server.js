@@ -23,6 +23,7 @@ module.exports = class RelayServer {
       socket.on('login', (msg) => {
         console.log('login: ' + msg);
         //TODO: login sequence
+        io.emit("log","login...")
       });
     });
 
