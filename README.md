@@ -8,12 +8,6 @@ The simple software for Alien RFID terminal
 * Relay the Packet from the terminal to some software (CrossMgr)
 
 
-## How to run
-
-```
-. node/bin/activate
-```
-
 ### start server
 
 ```
