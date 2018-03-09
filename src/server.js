@@ -3,8 +3,8 @@
 
 const express = require("express");
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
 const path = require('path');
 
 const hostname = "0.0.0.0";
@@ -18,8 +18,15 @@ module.exports = class RelayServer {
 
   start() {
     app.use(express.static(path.join(__dirname+'/..', 'public')));
+    io.on('connection', function(socket){
+      console.log('a user connected');
+      socket.on('login', (msg) => {
+        console.log('login: ' + msg);
+        //TODO: login sequence
+      });
+    });
 
-    app.listen(port, hostname);
+    server.listen(port, hostname);
     console.log(`Server running at http://${hostname}:${port}`);
     return true;
   }

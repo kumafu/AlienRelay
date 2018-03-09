@@ -1,15 +1,15 @@
+var socket;
 $(document).ready(function(){
     init();
     addEvent();
 });
 
 function init(){
-
+	socket = io();
 }
 
 function addEvent(){
-	var target = document.getElementById('login');
-	target.addEventListener('click', function(){
-		alert();
-	}, false);
+	$("#login").click(function(){
+		socket.emit("login","null");
+	});
 }
