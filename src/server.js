@@ -20,9 +20,6 @@ module.exports = class RelayServer {
   start() {
     app.use(express.static(path.join(__dirname+'/..', 'public')));
 
-    let pl = new packetlistener();
-    pl.init();
-
     io.on('connection', function(socket){
       console.log('a user connected');
       socket.on('login', (msg) => {
@@ -31,6 +28,10 @@ module.exports = class RelayServer {
         io.emit("log","login...")
       });
     });
+
+    let pl = new packetlistener();
+    pl.init(io);
+
 
 
 

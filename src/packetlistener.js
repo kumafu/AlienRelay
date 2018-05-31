@@ -1,25 +1,37 @@
 
-const dgram = require('dgram');
+const net = require('net');
 
 module.exports = class packetlistener {
   constructor() {}
 
-  init() {
-    //Notify
-    let NotifySock = dgram.createSocket("udp4", function (msg, rinfo) {
-      var date = new Date().getTime();
-      console.log('got Notify from '+ rinfo.address +':'+ rinfo.port+" | "+date+" | "+rinfo.size);
-      io.emit('log', msg.toString('ascii', 0, rinfo.size));
-    });
-    NotifySock.bind(53000, '0.0.0.0');
+  init(_io) {
+	net.createServer(function(NotifySock) {
+		console.log('CONNECTED: ' + NotifySock.remoteAddress +':'+ NotifySock.remotePort);
+		NotifySock.on('data', function(data) {
+			console.log('DATA: ' + data );
+			_io.emit('log', "Receive: Notify from" + NotifySock.remoteAddress + ":" + NotifySock.remotePort);
+		});
+		NotifySock.on('close', function(had_error) {
+			console.log('CLOSED. Had Error: ' + had_error);
+		});
+		NotifySock.on('error', function(err) {
+			console.log('ERROR: ' + err.stack);
+		});
+	}).listen(53136);
 
-    //TagList
-    let TagListSock = dgram.createSocket("udp4", function (msg, rinfo) {
-      var date = new Date().getTime();
-      console.log('got TagList from '+ rinfo.address +':'+ rinfo.port+" | "+date+" | "+rinfo.size);
-      io.emit('log', msg.toString('ascii', 0, rinfo.size));
-    });
-    TagListSock.bind(4000, '0.0.0.0');
+	net.createServer(function(TagStreamSock) {
+		console.log('CONNECTED: ' + TagStreamSock.remoteAddress +':'+ TagStreamSock.remotePort);
+		TagStreamSock.on('data', function(data) {
+			console.log('DATA: ' + data );
+			_io.emit('log', "Receive: TagStream from" + TagStreamSock.remoteAddress + ":" + TagStreamSock.remotePort);
+		});
+		TagStreamSock.on('close', function(had_error) {
+			console.log('CLOSED. Had Error: ' + had_error);
+		});
+		TagStreamSock.on('error', function(err) {
+			console.log('ERROR: ' + err.stack);
+		});
+	}).listen(4000);
     return true;
   }
 };
