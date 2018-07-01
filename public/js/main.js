@@ -16,4 +16,7 @@ function addEvent(){
 	socket.on('log', (msg) => {
     	$('#log-field').append(msg+"\n");
     });
+	$("#send-cmd").click(function(){
+		socket.emit("send-cmd",$("#cmd-text").val());
+	});
 }
