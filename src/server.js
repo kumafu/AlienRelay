@@ -68,13 +68,8 @@ module.exports = class RelayServer {
 
     let pl = new packetlistener();
     pl.init(io);
-
-
-
-
     server.listen(port, hostname);
-    app.listen(port, hostname);
-    io.listen(http);
+    //io.listen(http);
     console.log(`Server running at http://${hostname}:${port}`);
 
     return true;
