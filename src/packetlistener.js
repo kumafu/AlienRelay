@@ -1,5 +1,6 @@
 
 const net = require('net');
+const client = require('./crossmgrClient.js');
 
 module.exports = class packetlistener {
   constructor() {}
