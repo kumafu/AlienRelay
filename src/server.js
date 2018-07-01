@@ -6,11 +6,8 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
 const path = require('path');
-<<<<<<< HEAD
 const packetlistener = require("./packetlistener.js");
-=======
 const Telnet = require('telnet-client')
->>>>>>> Telnet login
 
 const hostname = "0.0.0.0";
 const ALIEN_HOST_ADDRESS = "192.168.1.150"
@@ -77,6 +74,7 @@ module.exports = class RelayServer {
 
     server.listen(port, hostname);
     app.listen(port, hostname);
+    io.listen(http);
     console.log(`Server running at http://${hostname}:${port}`);
 
     return true;
