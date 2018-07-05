@@ -42,8 +42,9 @@ module.exports = class RelayServer {
     ac.init(function() {
         // send 'info', when telnet connection is ready
         ac.cmd('info', function(err, res) {
-	  console.log(err);
-	  console.log(res);
+            console.log(err);
+            console.log(res);
+            io.emit("log",res);
         });
     });
 
