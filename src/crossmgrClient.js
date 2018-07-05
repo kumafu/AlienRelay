@@ -56,8 +56,8 @@ module.exports = class crossmgrClient {
   }
 
   sendData(tag, time, readCount, antenna) {
-    msg = format(tag, time, readCount, antenna)
-    send(msg)
+    let msg = this.format(tag, time, readCount, antenna)
+    this.send(msg)
   }
 
   send(_msg){
@@ -65,12 +65,14 @@ module.exports = class crossmgrClient {
   }
 
   format(tag, time, readCount, antenna){
-    opt = JSON.parse(JSON.stringify(alienOptions))
+    let message2 = `Received ${readCount}. tag=${tag}, time=${time}`;
+    
+    let opt = JSON.parse(JSON.stringify(alienOptions))
     opt["tag"] = tag
     opt["time"] = time
     opt["readCount"] = readCount
     opt["antenna"] = antenna
-    message = `<?xml version="1.0" encoding="UTF-8"?>\
+    let message = `<?xml version="1.0" encoding="UTF-8"?>\
     <Alien-RFID-Reader-Auto-Notification>\
  <ReaderName>${opt.readerName}</ReaderName>\
  <ReaderType>${opt.readerType}</ReaderType>\
@@ -82,15 +84,15 @@ module.exports = class crossmgrClient {
  <Alien-RFID-Tag-List>\
    <Alien-RFID-Tag>\
     <TagID>${opt.tag}</TagID>\
-    <DiscoveryTime>${opt.discoveryTime}</DiscoveryTime>\
-    <LastSeenTime>${opt.lastSeenTime}</LastSeenTime>\
+    <DiscoveryTime>${opt.time}</DiscoveryTime>\
+    <LastSeenTime>${opt.time}</LastSeenTime>\
     <Antenna>0</Antenna>\
     <ReadCount>${opt.readCount}</ReadCount>\
     <Protocol>1</Protocol>\
    </Alien-RFID-Tag>\
  </Alien-RFID-Tag-List>\
-</Alien-RFID-Reader-Auto-Notification>\r\n\0`;
-    return message;
+</Alien-RFID-Reader-Auto-Notification>`;
+    return message2;
   }
 }
 // count = 0

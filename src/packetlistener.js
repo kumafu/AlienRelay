@@ -38,10 +38,11 @@ module.exports = class packetlistener {
                     if (strs[line].indexOf("Tag:") === 0){
                         let eachSection = strs[line].split(',');
                         let tagID = Number(eachSection[0].replace("Tag:0000 ",""));
-                        let date = eachSection[1].replace("Disc:","");
+                        let date = eachSection[1].replace("Disc:","").trim();
                         let count = Number(eachSection[3].replace("Count:",""));
                         let ant = Number(eachSection[4].replace("Ant:",""));
                         console.log("Parsed Data:",tagID,date,count,ant);
+                        _cl.sendData(tagID,date,count,ant);
                     }
                 }
               }
