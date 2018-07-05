@@ -23,7 +23,7 @@ module.exports = class crossmgrClient {
   constructor() {}
 
   init() {
-  	var HOST = '192.168.1.7';
+  	var HOST = '192.168.251.137';
 	var PORT = 53135;
 	client = new net.Socket();
 	console.log("START CONNECTING");

@@ -27,6 +27,7 @@ module.exports = class RelayServer {
     let pl = new packetlistener();
     pl.init(io, cl);
 
+    // for web client
     io.on('connection', function(socket){
       console.log('a user connected');
       socket.on('login', (msg) => {
