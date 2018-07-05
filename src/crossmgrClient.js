@@ -65,7 +65,13 @@ module.exports = class crossmgrClient {
   }
 
   format(tag, time, readCount, antenna){
+    let datetime = new Date(time);
+    let timeOnly = formatDate(datetime, "hh:mm:ss.SSS");
+    let dateOnly = formatDate(datetime, "YYYYMMDD");
     let message2 = `Received ${readCount}. tag=${tag}, time=${time}`;
+    let message3 = `DA${tag} ${timeOnly} 10  00003      C7 date=${dateOnly}`;
+
+    console.log(message3);
     
     let opt = JSON.parse(JSON.stringify(alienOptions))
     opt["tag"] = tag
@@ -92,7 +98,7 @@ module.exports = class crossmgrClient {
    </Alien-RFID-Tag>\
  </Alien-RFID-Tag-List>\
 </Alien-RFID-Reader-Auto-Notification>`;
-    return message2;
+    return message3;
   }
 }
 // count = 0
