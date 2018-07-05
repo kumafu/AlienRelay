@@ -15,7 +15,7 @@ module.exports = class AlienClient {
       shellPrompt: "Alien>",
       loginPrompt: "Username>",
       passwordPrompt: "Password>",
-      timeout: 60000,
+      timeout: 1000 * 60 * 60 * 24,
       execTimeout: 60000,
       sendTimeout: 1000,
       debug: false,
