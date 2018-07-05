@@ -15,10 +15,11 @@ module.exports = class AlienClient {
       shellPrompt: "Alien>",
       loginPrompt: "Username>",
       passwordPrompt: "Password>",
-      timeout: 30000,
-      execTimeout: 30000,
-      sendTimeout: 30000,
-      debug: true
+      timeout: 60000,
+      execTimeout: 60000,
+      sendTimeout: 1000,
+      debug: false,
+      maxBufferLength: 100000
     }
 
     var that = this;
@@ -38,12 +39,8 @@ module.exports = class AlienClient {
   }
 
   cmd(command, callback) {
-    this.connection.exec(command, function(err, response) {
-        if (! err) {
-          callback(response)
-	} else {
-	  console.log(err)
-	}
+    this.connection.exec(command, this.telnet_params, function(err, response) {
+        callback(err, response)
     })
   }
 }
