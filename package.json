@@ -7,12 +7,14 @@
   "scripts": {
     "lint": "eslint ./src/*js",
     "start": "node ./src/alienrelay.js",
+    "fake_alien": "node ./src/fake_alien_server.js",
     "test": "NODE_PATH=`pwd` mocha test.js"
   },
   "dependencies": {
     "eslint": "^4.17.0",
     "express": "^4.16.1",
     "mocha": "^5.0.1",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "telnet-client": "^0.15.5"
   }
 }
