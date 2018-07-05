@@ -2,6 +2,15 @@
 const net = require('net');
 var client;
 
+
+var alienOptions = {
+  'readerName':	'Alien Client Test',
+  'readerType':	'Python Emulator', // Need to change?
+  'macAddress':	'01:02:03:04:05:06',
+  'notifyHost':	"127.0.0.1",
+  'cmdPort':    53161
+}
+
 var formatDate = function (date, format) {
   if (!format) format = 'YYYY-MM-DD hh:mm:ss.SSS';
   format = format.replace(/YYYY/g, date.getFullYear());
@@ -46,31 +55,41 @@ module.exports = class crossmgrClient {
     });
   }
 
+  sendData(tag, time, readCount, antenna) {
+    msg = format(tag, time, readCount, antenna)
+    send(msg)
+  }
+
   send(_msg){
     client.write(_msg + "\r");
   }
 
-  format(n , lap, t){
-    message = '<?xml version="1.0" encoding="UTF-8"?>\
+  format(tag, time, readCount, antenna){
+    opt = JSON.parse(JSON.stringify(alienOptions))
+    opt["tag"] = tag
+    opt["time"] = time
+    opt["readCount"] = readCount
+    opt["antenna"] = antenna
+    message = `<?xml version="1.0" encoding="UTF-8"?>\
     <Alien-RFID-Reader-Auto-Notification>\
- <ReaderName>{readerName}</ReaderName>\
- <ReaderType>{readerType}</ReaderType>\
- <IPAddress>{notifyHost}</IPAddress>\
- <CommandPort>{cmdPort}</CommandPort>\
- <MACAddress>{macAddress}</MACAddress>\
- <Time>{time}</Time>\
+ <ReaderName>${opt.readerName}</ReaderName>\
+ <ReaderType>${opt.readerType}</ReaderType>\
+ <IPAddress>${opt.notifyHost}</IPAddress>\
+ <CommandPort>${opt.cmdPort}</CommandPort>\
+ <MACAddress>${opt.macAddress}</MACAddress>\
+ <Time>${opt.time}</Time>
  <Reason>TEST MESSAGE</Reason>\
  <Alien-RFID-Tag-List>\
    <Alien-RFID-Tag>\
-    <TagID>{tag}</TagID>\
-    <DiscoveryTime>{discoveryTime}</DiscoveryTime>\
-    <LastSeenTime>{lastSeenTime}</LastSeenTime>\
+    <TagID>${opt.tag}</TagID>\
+    <DiscoveryTime>${opt.discoveryTime}</DiscoveryTime>\
+    <LastSeenTime>${opt.lastSeenTime}</LastSeenTime>\
     <Antenna>0</Antenna>\
-    <ReadCount>{readCount}</ReadCount>\
+    <ReadCount>${opt.readCount}</ReadCount>\
     <Protocol>1</Protocol>\
    </Alien-RFID-Tag>\
  </Alien-RFID-Tag-List>\
-</Alien-RFID-Reader-Auto-Notification>\r\n\0';
+</Alien-RFID-Reader-Auto-Notification>\r\n\0`;
     return message;
   }
 }
