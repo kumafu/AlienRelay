@@ -23,36 +23,36 @@ module.exports = class crossmgrClient {
   constructor() {}
 
   init() {
-  	var HOST = '192.168.251.137';
-	var PORT = 53135;
-	client = new net.Socket();
-	console.log("START CONNECTING");
-	client.connect(PORT, HOST, function() {
-	    console.log('CONNECTED TO: ' + HOST + ':' + PORT);
-	    client.write("N0000AlienRelay\r");
-	});
-	client.on('close', function() {
-	    console.log('Connection closed');
-	});
-	client.on('data', function(data) {
-	    console.log('DATA: ' + data);
-	    if (data.toString().substr(0,2) == "GT"){
+    var HOST = '192.168.251.137';
+    var PORT = 53135;
+    client = new net.Socket();
+    console.log("START CONNECTING");
+    client.connect(PORT, HOST, function() {
+        console.log('CONNECTED TO: ' + HOST + ':' + PORT);
+        client.write("N0000AlienRelay\r");
+    });
+    client.on('close', function() {
+        console.log('Connection closed');
+    });
+    client.on('data', function(data) {
+        console.log('DATA: ' + data);
+        if (data.toString().substr(0,2) == "GT"){
 
-	    	client.write("GT0"+formatDate(new Date(),"hhmmssSSS")+" date="+formatDate(new Date(),"YYYYMMDD")+"\r");
-	    }
-	    if (data.toString().substr(0,5) == "S0000"){
-	    	console.log("Ready to send data")
-	    }
-	});
+            client.write("GT0"+formatDate(new Date(),"hhmmssSSS")+" date="+formatDate(new Date(),"YYYYMMDD")+"\r");
+        }
+        if (data.toString().substr(0,5) == "S0000"){
+            console.log("Ready to send data")
+        }
+    });
   }
 
   send(_msg){
-	client.write(_msg + "\r");
+    client.write(_msg + "\r");
   }
 
   format(n , lap, t){
-	message = '<?xml version="1.0" encoding="UTF-8"?>\
-	<Alien-RFID-Reader-Auto-Notification>\
+    message = '<?xml version="1.0" encoding="UTF-8"?>\
+    <Alien-RFID-Reader-Auto-Notification>\
  <ReaderName>{readerName}</ReaderName>\
  <ReaderType>{readerType}</ReaderType>\
  <IPAddress>{notifyHost}</IPAddress>\
@@ -63,21 +63,21 @@ module.exports = class crossmgrClient {
  <Alien-RFID-Tag-List>\
    <Alien-RFID-Tag>\
     <TagID>{tag}</TagID>\
-	<DiscoveryTime>{discoveryTime}</DiscoveryTime>\
-	<LastSeenTime>{lastSeenTime}</LastSeenTime>\
-	<Antenna>0</Antenna>\
-	<ReadCount>{readCount}</ReadCount>\
-	<Protocol>1</Protocol>\
+    <DiscoveryTime>{discoveryTime}</DiscoveryTime>\
+    <LastSeenTime>{lastSeenTime}</LastSeenTime>\
+    <Antenna>0</Antenna>\
+    <ReadCount>{readCount}</ReadCount>\
+    <Protocol>1</Protocol>\
    </Alien-RFID-Tag>\
  </Alien-RFID-Tag-List>\
 </Alien-RFID-Reader-Auto-Notification>\r\n\0';
-	return message;
+    return message;
   }
 }
 // count = 0
 // def formatMessage( n, lap, t ):
-// 	global count
-// 	message = '''<?xml version="1.0" encoding="UTF-8"?>
+//  global count
+//  message = '''<?xml version="1.0" encoding="UTF-8"?>
 // <Alien-RFID-Reader-Auto-Notification>
 //  <ReaderName>{readerName}</ReaderName>
 //  <ReaderType>{readerType}</ReaderType>
@@ -89,28 +89,28 @@ module.exports = class crossmgrClient {
 //  <Alien-RFID-Tag-List>
 //    <Alien-RFID-Tag>
 //     <TagID>{tag}</TagID>
-// 	<DiscoveryTime>{discoveryTime}</DiscoveryTime>
-// 	<LastSeenTime>{lastSeenTime}</LastSeenTime>
-// 	<Antenna>0</Antenna>
-// 	<ReadCount>{readCount}</ReadCount>
-// 	<Protocol>1</Protocol>
+//  <DiscoveryTime>{discoveryTime}</DiscoveryTime>
+//  <LastSeenTime>{lastSeenTime}</LastSeenTime>
+//  <Antenna>0</Antenna>
+//  <ReadCount>{readCount}</ReadCount>
+//  <Protocol>1</Protocol>
 //    </Alien-RFID-Tag>
 //  </Alien-RFID-Tag-List>
 // </Alien-RFID-Reader-Auto-Notification>\r\n\0'''
 
-// 	tStr = t.strftime( '%Y/%m/%d %H:%M:%S.%f' )
-// 	options = alienOptions
-// 	options.update(
-// 		{
-// 			'tag':				tag[n],
-// 			'time':				tStr,
-// 			'discoveryTime':	tStr,
-// 			'lastSeenTime':		tStr,
-// 			'readCount':		count,
-// 		}
-// 	)
-// 	count += 1
-	
-// 	s = message.format( **options )
-// 	doc = parseString( s[:-3] )
-// 	return message.format( **options )
+//  tStr = t.strftime( '%Y/%m/%d %H:%M:%S.%f' )
+//  options = alienOptions
+//  options.update(
+//      {
+//          'tag':              tag[n],
+//          'time':             tStr,
+//          'discoveryTime':    tStr,
+//          'lastSeenTime':     tStr,
+//          'readCount':        count,
+//      }
+//  )
+//  count += 1
+    
+//  s = message.format( **options )
+//  doc = parseString( s[:-3] )
+//  return message.format( **options )
