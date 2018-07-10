@@ -63,18 +63,17 @@ module.exports = class AlienClient {
     var that = this;
     var funcs = [];
     var wait = true;
-    for(var i = 0; i < commands.length; i++) {
-      function() {
+    f(0);
+    function f(i){
         that.connection.exec(commands[i], that.telnet_params, function(err, res) {
-          wait = false;
-          callback(err, res)
+          console.log(commands[i]);
+          callback(err, res);
+          i++;
+          if (i < commands.length) f(i);
+          else lastCallback();
         });
-      }()
-      while(wait) {}
-      wait = true;
     }
 
-    lastCallback();
   }
 
   close() {
