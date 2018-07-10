@@ -13,23 +13,23 @@ const alienClient = require('./alienClient.js');
 const hostname = "0.0.0.0";
 const port = 8080;
 
+var bInit = false;
+var cl;
+var pl;
+var ac;
+
 module.exports = class RelayServer {
 
   start() {
     app.use(express.static(path.join(__dirname+'/..', 'public')));
 
-    let cl = new crossmgrClient();
-    cl.init(io);
-    let pl = new packetlistener();
-    pl.init(io, cl);
-    let ac = new alienClient();
-    
     // for web client
     io.on('connection', function(socket){
-      console.log('a user connected');
+      console.log('[Web] a user connected');
+      init();
 
       socket.on('cmd', (msg) => {
-        console.log('cmd: ' + msg.cmd);
+        console.log('[Web] cmd: ' + msg.cmd);
         //parse
         switch(msg.cmd){
             case "crossmgr-connect":
@@ -50,10 +50,21 @@ module.exports = class RelayServer {
       });
     });
 
+    function init(){
+        if (!bInit){
+            cl = new crossmgrClient();
+            cl.init(io);
+            pl = new packetlistener();
+            pl.init(io, cl);
+            ac = new alienClient();
+            bInit = true;
+        }
+    }
+
 
     server.listen(port, hostname);
     // io.listen(http);
-    console.log(`Server running at http://${hostname}:${port}`);
+    console.log(`[Web] Server running at http://${hostname}:${port}`);
 
     return true;
   }

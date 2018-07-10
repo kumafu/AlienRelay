@@ -8,8 +8,8 @@ module.exports = class packetlistener {
 
 
   init(_io, _cl) {
-    console.log("init for TagStream server");
-    _io.emit("log-alien","init for TagStream server");
+    console.log("[TagStream] init for TagStream server");
+    _io.emit("log-general","init for TagStream server");
 
     // net.createServer(function(NotifySock) {
     //     console.log('ONNECTED: ' + NotifySock.remoteAddress +':'+ NotifySock.remotePort);
@@ -26,7 +26,7 @@ module.exports = class packetlistener {
     // }).listen(53136);
 
     net.createServer(function(TagStreamSock) {
-        console.log('CONNECTED: ' + TagStreamSock.remoteAddress +':'+ TagStreamSock.remotePort);
+        console.log('[TagStream] CONNECTED: ' + TagStreamSock.remoteAddress +':'+ TagStreamSock.remotePort);
         TagStreamSock.on('data', function(data) {
             parsePacket(data.toString());
             console.log('DATA: ' + data );
@@ -41,19 +41,20 @@ module.exports = class packetlistener {
                         let date = eachSection[1].replace("Disc:","").trim();
                         let count = Number(eachSection[3].replace("Count:",""));
                         let ant = Number(eachSection[4].replace("Ant:",""));
-                        console.log("Parsed Data:",tagID,date,count,ant);
+                        console.log("[TagStream] Parsed Data:",tagID,date,count,ant);
+                        _io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
                         _cl.sendData(tagID,date,count,ant);
                     }
                 }
               }
         });
         TagStreamSock.on('close', function(had_error) {
-            console.log('CLOSED. Had Error: ' + had_error);
-            _io.emit("log-alien",'CLOSED. Had Error: ' + had_error);
+            console.log('[TagStream] CLOSED. Had Error: ' + had_error);
+            _io.emit("log-general",'[TagStream] CLOSED. Had Error: ' + had_error);
         });
         TagStreamSock.on('error', function(err) {
-            console.log('ERROR: ' + err.stack);
-            _io.emit("log-alien",'ERROR: ' + err.stack);
+            console.log('[TagStream] ERROR: ' + err.stack);
+            _io.emit("log-general",'[TagStream] ERROR: ' + err.stack);
         });
     }).listen(4000);
     return true;
