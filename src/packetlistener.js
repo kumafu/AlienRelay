@@ -29,6 +29,7 @@ module.exports = class packetlistener {
     //     });
     // }).listen(53136);
 
+    var that = this;
     net.createServer(function(TagStreamSock) {
         console.log('[TagStream] CONNECTED: ' + TagStreamSock.remoteAddress +':'+ TagStreamSock.remotePort);
         TagStreamSock.on('data', function(data) {
@@ -47,19 +48,19 @@ module.exports = class packetlistener {
                         let count = Number(eachSection[3].replace("Count:",""));
                         let ant = Number(eachSection[4].replace("Ant:",""));
                         console.log("[TagStream] Parsed Data:",tagID,date,count,ant);
-                        this.io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
-                        if (this.cl.bConnect) this.cl.sendData(tagID,date,count,ant);
+                        that.io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
+                        if (that.cl.bConnect) that.cl.sendData(tagID,date,count,ant);
                     }
                 }
               }
         });
         TagStreamSock.on('close', function(had_error) {
             console.log('[TagStream] CLOSED. Had Error: ' + had_error);
-            this.io.emit("log-general",'[TagStream] CLOSED. Had Error: ' + had_error);
+            that.io.emit("log-general",'[TagStream] CLOSED. Had Error: ' + had_error);
         });
         TagStreamSock.on('error', function(err) {
             console.log('[TagStream] ERROR: ' + err.stack);
-            this.io.emit("log-general",'[TagStream] ERROR: ' + err.stack);
+            that.io.emit("log-general",'[TagStream] ERROR: ' + err.stack);
         });
     }).listen(4000);
 

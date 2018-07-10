@@ -29,6 +29,8 @@ module.exports = class AlienClient {
     this.connection.on('ready', function(prompt) {
       console.log(prompt)
       that.onReady()
+        console.log('[Alien] Connected')
+        io.emit('log-alien','Connected');
       io.emit("state",{alien:1});
     })
     this.connection.on('error', function() {

@@ -46,7 +46,7 @@ module.exports = class RelayServer {
                     ac.cmd('info', function(err, res) {
                         console.log(err);
                         console.log(res);
-                        io.emit("log",res);
+                        io.emit("log-alien",res);
                     });
                 }, io, msg.ipaddr);
                 break;;
