@@ -57,4 +57,9 @@ module.exports = class AlienClient {
         callback(err, response)
     })
   }
+
+  close() {
+    this.connection.end();
+  }
+  
 }

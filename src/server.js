@@ -47,10 +47,10 @@ module.exports = class RelayServer {
                         console.log(err);
                         console.log(res);
                         io.emit("log-alien",res);
+                        ac.close()
                     });
                 }, io, msg.ipaddr);
                 break;;
-
         }
       });
     });
