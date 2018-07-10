@@ -33,17 +33,17 @@ module.exports = class packetlistener {
     net.createServer(function(TagStreamSock) {
         console.log('[TagStream] CONNECTED: ' + TagStreamSock.remoteAddress +':'+ TagStreamSock.remotePort);
         TagStreamSock.on('data', function(data) {
+            console.log('[TagStream] DATA: ' + data );
             parsePacket(data.toString());
-            console.log('DATA: ' + data );
             //_io.emit('log', "Receive: TagStream from" + TagStreamSock.remoteAddress + ":" + TagStreamSock.remotePort);
 
               function parsePacket(_str){
                 let strs = _str.split('\n');
                 for (var line in strs){
-                    //Format must be 'Tarse'
-                    if (strs[line].indexOf("Tag:") === 0){
+                    //Format must be 'Text'
+                    if (strs[line].indexOf("Tag:") != -1){
                         let eachSection = strs[line].split(',');
-                        let tagID = Number(eachSection[0].replace("Tag:0000 ",""));
+                        let tagID = Number(eachSection[0].replace("\0","").replace("Tag:0000 ",""));
                         let date = eachSection[1].replace("Disc:","").trim();
                         let count = Number(eachSection[3].replace("Count:",""));
                         let ant = Number(eachSection[4].replace("Ant:",""));
