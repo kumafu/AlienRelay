@@ -10,7 +10,7 @@ $(document).ready(function(){
 function init(){
     socket = io();
     $("#alien-ip-addr").val(localStorage.getItem('alien-ip-addr'));
-    $("#alien-tagstream-ip-addr").val(localStorage.getItem('alien-tagstream-ip-addr'));
+    $("#alien-target-ip-addr").val(localStorage.getItem('alien-target-ip-addr'));
     $("#crossmgr-ip-addr").val(localStorage.getItem('crossmgr-ip-addr'));
 }
 
