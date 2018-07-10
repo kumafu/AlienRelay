@@ -35,6 +35,7 @@ module.exports = class packetlistener {
               function parsePacket(_str){
                 let strs = _str.split('\n');
                 for (var line in strs){
+                    //Format must be 'Tarse'
                     if (strs[line].indexOf("Tag:") === 0){
                         let eachSection = strs[line].split(',');
                         let tagID = Number(eachSection[0].replace("Tag:0000 ",""));
@@ -43,7 +44,7 @@ module.exports = class packetlistener {
                         let ant = Number(eachSection[4].replace("Ant:",""));
                         console.log("[TagStream] Parsed Data:",tagID,date,count,ant);
                         _io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
-                        _cl.sendData(tagID,date,count,ant);
+                        if (_cl.bConnect) _cl.sendData(tagID,date,count,ant);
                     }
                 }
               }

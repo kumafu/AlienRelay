@@ -2,6 +2,7 @@
 const net = require('net');
 var client;
 var io;
+this.bConnect = false;
 
 var formatDate = function (date, format) {
   if (!format) format = 'YYYY-MM-DD hh:mm:ss.SSS';
@@ -37,6 +38,7 @@ module.exports = class crossmgrClient {
         console.log('[CrossMgr] CONNECTED TO: ' + HOST + ':' + PORT);
         client.write("N0000AlienRelay\r");
         io.emit("state",{crossmgr:1});
+        this.bConnect = true;
     });
     client.on('error', function(err) {
         console.log('[CrossMgr] Connect ERROR: ' + err.stack);
@@ -46,6 +48,7 @@ module.exports = class crossmgrClient {
         console.log('[CrossMgr] Connection closed');
         io.emit("log-crossmgr",'Connection closed');
         io.emit("state",{crossmgr:0});
+        this.bConnect = false;
     });
     client.on('data', function(data) {
         console.log('DATA: ' + data);
