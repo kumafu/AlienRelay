@@ -18,7 +18,8 @@ function addEvent(){
     //alien command
     $("#alien-connect-btn").click(function(){
         let ipaddr = $("#alien-ip-addr").val();
-        socket.emit("cmd",{"cmd":"alien-connect","ipaddr":ipaddr});
+        let target = $("#alien-target-ip-addr").val();
+        socket.emit("cmd",{"cmd":"alien-connect","ipaddr":ipaddr,"target":target});
     });
     $("#alien-send-cmd").click(function(){
         socket.emit("cmd",{"cmd":"alien-send-cmd","val":$("#alien-cmd-text").val()});
