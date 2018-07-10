@@ -4,12 +4,16 @@ const client = require('./crossmgrClient.js');
 
 module.exports = class packetlistener {
   constructor() {
+    this.io;
+    this.cl;
   }
 
 
   init(_io, _cl) {
+    this.io = _io;
+    this.cl = _cl;
     console.log("[TagStream] init for TagStream server");
-    _io.emit("log-general","init for TagStream server");
+    this.io.emit("log-general","init for TagStream server");
 
     // net.createServer(function(NotifySock) {
     //     console.log('ONNECTED: ' + NotifySock.remoteAddress +':'+ NotifySock.remotePort);
@@ -43,21 +47,22 @@ module.exports = class packetlistener {
                         let count = Number(eachSection[3].replace("Count:",""));
                         let ant = Number(eachSection[4].replace("Ant:",""));
                         console.log("[TagStream] Parsed Data:",tagID,date,count,ant);
-                        _io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
-                        if (_cl.bConnect) _cl.sendData(tagID,date,count,ant);
+                        this.io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
+                        if (this.cl.bConnect) this.cl.sendData(tagID,date,count,ant);
                     }
                 }
               }
         });
         TagStreamSock.on('close', function(had_error) {
             console.log('[TagStream] CLOSED. Had Error: ' + had_error);
-            _io.emit("log-general",'[TagStream] CLOSED. Had Error: ' + had_error);
+            this.io.emit("log-general",'[TagStream] CLOSED. Had Error: ' + had_error);
         });
         TagStreamSock.on('error', function(err) {
             console.log('[TagStream] ERROR: ' + err.stack);
-            _io.emit("log-general",'[TagStream] ERROR: ' + err.stack);
+            this.io.emit("log-general",'[TagStream] ERROR: ' + err.stack);
         });
     }).listen(4000);
+
     return true;
   }
 

@@ -2,7 +2,6 @@
 const net = require('net');
 var client;
 var io;
-this.bConnect = false;
 
 var formatDate = function (date, format) {
   if (!format) format = 'YYYY-MM-DD hh:mm:ss.SSS';
@@ -22,23 +21,34 @@ var formatDate = function (date, format) {
 
 module.exports = class crossmgrClient {
 
-  constructor() {}
+  constructor() {
+    this.bConnect = false;
+  }
 
   init(_io) {
     io = _io;
   }
 
   connect(_host, _port){
+    if (this.bConnect){
+      console.log('[CrossMgr] Already Connected');
+      io.emit("log-crossmgr","Already Connected");
+      io.emit("state",{crossmgr:1});
+      this.bConnect = true;
+      return;
+    }
     var HOST = _host;
     var PORT = _port;
+    var that = this;
     client = new net.Socket();
     console.log("[CrossMgr] START CONNECTING...");
     io.emit("log-crossmgr","START CONNECTING...");
+
     client.connect(PORT, HOST, function() {
         console.log('[CrossMgr] CONNECTED TO: ' + HOST + ':' + PORT);
         client.write("N0000AlienRelay\r");
         io.emit("state",{crossmgr:1});
-        this.bConnect = true;
+        that.bConnect = true;
     });
     client.on('error', function(err) {
         console.log('[CrossMgr] Connect ERROR: ' + err.stack);
@@ -48,7 +58,7 @@ module.exports = class crossmgrClient {
         console.log('[CrossMgr] Connection closed');
         io.emit("log-crossmgr",'Connection closed');
         io.emit("state",{crossmgr:0});
-        this.bConnect = false;
+        that.bConnect = false;
     });
     client.on('data', function(data) {
         console.log('DATA: ' + data);

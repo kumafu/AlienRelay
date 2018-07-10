@@ -52,6 +52,7 @@ module.exports = class RelayServer {
 
     function init(){
         if (!bInit){
+            console.log("[All] Init all constructor");
             cl = new crossmgrClient();
             cl.init(io);
             pl = new packetlistener();
