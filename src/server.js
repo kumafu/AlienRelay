@@ -31,7 +31,7 @@ module.exports = class RelayServer {
       if (cl.bConnect) {
         io.emit("log-crossmgr","Already Connected");
         io.emit("state",{crossmgr:1});
-    }
+      }
 
       socket.on('cmd', (msg) => {
         console.log('[Web] cmd: ' + msg.cmd);
@@ -42,13 +42,24 @@ module.exports = class RelayServer {
                 break;
             case "alien-connect":
                 ac.init(function() {
-                    // send 'info', when telnet connection is ready
-                    ac.cmd('info', function(err, res) {
-                        console.log(err);
-                        console.log(res);
-                        io.emit("log-alien",res);
-                        ac.close()
-                    });
+                  var commands = []
+                  commands[0] = "TagStreamMode On";
+                  commands[1] = "TagStreamAddress " + msg.target + ":4000"
+                  commands[2] = "TagStreamFormat Text"
+                  ac.cmds(commands, function(err, res) {
+                    if (err) {
+                      console.log("error occurred: " + err);
+                    } else {
+                      console.log("response: " + res);
+                    }
+                  })
+                  // send 'info', when telnet connection is ready
+                  ac.cmd('info', function(err, res) {
+                    console.log(err);
+                    console.log(res);
+                    io.emit("log-alien",res);
+                    ac.close()
+                  });
                 }, io, msg.ipaddr);
                 break;;
         }

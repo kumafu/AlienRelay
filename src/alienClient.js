@@ -63,13 +63,13 @@ module.exports = class AlienClient {
     var that = this;
     var funcs = [];
     for(var i = 0; i < commands.length; i++) {
-      var f = function(
+      funcs[i] = function() {
         that.connection.exec(commands[i], callback);
-      )
+      }
     }
 
-    for (var func in funcs) {
-      func();
+    for (var i in funcs) {
+      funcs[i]();
     }
   }
 
