@@ -43,9 +43,9 @@ module.exports = class RelayServer {
             case "alien-connect":
                 ac.init(function() {
                   var commands = []
-                  commands[0] = "TagStreamMode On";
-                  commands[1] = "TagStreamAddress " + msg.target + ":4000"
-                  commands[2] = "TagStreamFormat Text"
+                  commands[0] = "TagStreamMode=On";
+                  commands[1] = "TagStreamAddress=" + msg.target + ":4000"
+                  commands[2] = "TagStreamFormat=Text"
                   ac.cmds(commands, function(err, res) {
                     if (err) {
                       console.log("error occurred: " + err);
