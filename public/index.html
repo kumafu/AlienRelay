@@ -5,18 +5,22 @@
 	<script src="./js/main.js"></script>
 </head>
 <body>
-<button id='login'>Login</button>
-<br>
+<h4>General</h4>
+<textarea id='log-field-general' rows="13" cols="80">
+	
+</textarea>
 <h4>Alien</h4>
-<textarea id='log-field' rows="13" cols="80">
+Alien IP Address<input type='text' id='alien-ip-addr'></input><button id='alien-connect-btn'>Connect to AlienTerminal</button><br>
+<input type='text' id='alien-cmd-text'></input><button id='alien-send-cmd'>Send</button><br>
+<textarea id='log-field-alien' rows="13" cols="80">
 	
 </textarea>
 <br>
 <h4>CrossMgr</h4>
+CrossMgr IP Address<input type='text' id='crossmgr-ip-addr'></input><button id='crossmgr-connect-btn'>Connect to CrossMgr</button><br>
 <textarea id='log-field-crossmgr' rows="13" cols="80">
 	
 </textarea>
 <br>
-<input type='text' id='cmd-text'></input><button id='send-cmd'>send</button>
 </body>
 </html>

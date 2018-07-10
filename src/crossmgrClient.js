@@ -1,15 +1,7 @@
 
 const net = require('net');
 var client;
-
-
-var alienOptions = {
-  'readerName':	'Alien Client Test',
-  'readerType':	'Python Emulator', // Need to change?
-  'macAddress':	'01:02:03:04:05:06',
-  'notifyHost':	"127.0.0.1",
-  'cmdPort':    53161
-}
+var io;
 
 var formatDate = function (date, format) {
   if (!format) format = 'YYYY-MM-DD hh:mm:ss.SSS';
@@ -31,28 +23,41 @@ module.exports = class crossmgrClient {
 
   constructor() {}
 
-  init() {
-    var HOST = '192.168.251.137';
-    var PORT = 53135;
+  init(_io) {
+    io = _io;
+  }
+
+  connect(_host, _port){
+    var HOST = _host;
+    var PORT = _port;
     client = new net.Socket();
-    console.log("START CONNECTING");
+    console.log("START CONNECTING TO CROSSMGR...");
+    io.emit("log-crossmgr","START CONNECTING TO CROSSMGR...");
     client.connect(PORT, HOST, function() {
         console.log('CONNECTED TO: ' + HOST + ':' + PORT);
         client.write("N0000AlienRelay\r");
     });
+    client.on('error', function(err) {
+        console.log('ERROR: ' + err.stack);
+        io.emit("log-crossmgr","ERROR:"+err.stack);
+    });
     client.on('close', function() {
         console.log('Connection closed');
+        io.emit("log-crossmgr",'Connection closed');
     });
     client.on('data', function(data) {
         console.log('DATA: ' + data);
         if (data.toString().substr(0,2) == "GT"){
-
-            client.write("GT0"+formatDate(new Date(),"hhmmssSSS")+" date="+formatDate(new Date(),"YYYYMMDD")+"\r");
+            let text = "GT0"+formatDate(new Date(),"hhmmssSSS")+" date="+formatDate(new Date(),"YYYYMMDD")+"\r";
+            client.write(text);
+            io.emit("log-crossmgr",text);
         }
         if (data.toString().substr(0,5) == "S0000"){
-            console.log("Ready to send data")
+            console.log("Ready to send data");
+            io.emit("log-crossmgr","Ready to send data");
         }
     });
+
   }
 
   sendData(tag, time, readCount, antenna) {
@@ -68,37 +73,11 @@ module.exports = class crossmgrClient {
     let datetime = new Date(time);
     let timeOnly = formatDate(datetime, "hh:mm:ss.SSS");
     let dateOnly = formatDate(datetime, "YYYYMMDD");
-    let message2 = `Received ${readCount}. tag=${tag}, time=${time}`;
-    let message3 = `DA${tag} ${timeOnly} 10  00003      C7 date=${dateOnly}`;
+    let message = `DA${tag} ${timeOnly} 10  00003      C7 date=${dateOnly}`;
 
-    console.log(message3);
+    console.log(message);
     
-    let opt = JSON.parse(JSON.stringify(alienOptions))
-    opt["tag"] = tag
-    opt["time"] = time
-    opt["readCount"] = readCount
-    opt["antenna"] = antenna
-    let message = `<?xml version="1.0" encoding="UTF-8"?>\
-    <Alien-RFID-Reader-Auto-Notification>\
- <ReaderName>${opt.readerName}</ReaderName>\
- <ReaderType>${opt.readerType}</ReaderType>\
- <IPAddress>${opt.notifyHost}</IPAddress>\
- <CommandPort>${opt.cmdPort}</CommandPort>\
- <MACAddress>${opt.macAddress}</MACAddress>\
- <Time>${opt.time}</Time>
- <Reason>TEST MESSAGE</Reason>\
- <Alien-RFID-Tag-List>\
-   <Alien-RFID-Tag>\
-    <TagID>${opt.tag}</TagID>\
-    <DiscoveryTime>${opt.time}</DiscoveryTime>\
-    <LastSeenTime>${opt.time}</LastSeenTime>\
-    <Antenna>0</Antenna>\
-    <ReadCount>${opt.readCount}</ReadCount>\
-    <Protocol>1</Protocol>\
-   </Alien-RFID-Tag>\
- </Alien-RFID-Tag-List>\
-</Alien-RFID-Reader-Auto-Notification>`;
-    return message3;
+    return message;
   }
 }
 // count = 0

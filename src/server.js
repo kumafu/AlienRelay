@@ -19,34 +19,44 @@ module.exports = class RelayServer {
     app.use(express.static(path.join(__dirname+'/..', 'public')));
 
     let cl = new crossmgrClient();
-    cl.init();
+    cl.init(io);
     let pl = new packetlistener();
     pl.init(io, cl);
     
     // for web client
     io.on('connection', function(socket){
       console.log('a user connected');
+      ////temp *OLD*
       socket.on('login', (msg) => {
         console.log('login: ' + msg);
         //TODO: login sequence
         io.emit("log","login...")
       });
-      socket.on('send-cmd', (msg) => {
-        console.log('cmd: ' + msg);
-        //send cmd to crossmgr
-        cl.send(msg);
+
+      socket.on('cmd', (msg) => {
+        console.log('cmd: ' + msg.cmd);
+        //parse
+        switch(msg.cmd){
+            case "crossmgr-connect":
+                let ipaddr = msg.ipaddr;
+                cl.connect(ipaddr, 53135);
+                break;
+            case "alien-connect":
+                let ac = new alienClient();
+                ac.init(function() {
+                    // send 'info', when telnet connection is ready
+                    ac.cmd('info', function(err, res) {
+                        console.log(err);
+                        console.log(res);
+                        io.emit("log",res);
+                    });
+                });
+                break;;
+
+        }
       });
     });
 
-    let ac = new alienClient();
-    ac.init(function() {
-        // send 'info', when telnet connection is ready
-        ac.cmd('info', function(err, res) {
-            console.log(err);
-            console.log(res);
-            io.emit("log",res);
-        });
-    });
 
     server.listen(port, hostname);
     // io.listen(http);
