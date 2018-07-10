@@ -58,6 +58,20 @@ module.exports = class AlienClient {
     })
   }
 
+  cmds(commands, callback) {
+    var that = this;
+    var funcs = [];
+    for(var i = 0; i < commands.length; i++) {
+      var f = function(
+        that.connection.exec(commands[i], callback);
+      )
+    }
+
+    for (var func in funcs) {
+      func();
+    }
+  }
+
   close() {
     this.connection.end();
   }
