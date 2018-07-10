@@ -4,12 +4,13 @@ const client = require('./crossmgrClient.js');
 
 module.exports = class packetlistener {
   constructor() {
-    console.log("Make PL constructor");
   }
 
 
   init(_io, _cl) {
     console.log("init for TagStream server");
+    _io.emit("log-alien","init for TagStream server");
+
     // net.createServer(function(NotifySock) {
     //     console.log('ONNECTED: ' + NotifySock.remoteAddress +':'+ NotifySock.remotePort);
     //     NotifySock.on('data', function(data) {
@@ -30,7 +31,6 @@ module.exports = class packetlistener {
             parsePacket(data.toString());
             console.log('DATA: ' + data );
             //_io.emit('log', "Receive: TagStream from" + TagStreamSock.remoteAddress + ":" + TagStreamSock.remotePort);
-            _io.emit('log', "Receive: "+data);
 
               function parsePacket(_str){
                 let strs = _str.split('\n');
@@ -49,9 +49,11 @@ module.exports = class packetlistener {
         });
         TagStreamSock.on('close', function(had_error) {
             console.log('CLOSED. Had Error: ' + had_error);
+            _io.emit("log-alien",'CLOSED. Had Error: ' + had_error);
         });
         TagStreamSock.on('error', function(err) {
             console.log('ERROR: ' + err.stack);
+            _io.emit("log-alien",'ERROR: ' + err.stack);
         });
     }).listen(4000);
     return true;
