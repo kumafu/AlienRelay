@@ -1,5 +1,5 @@
 var socket;
-var state = {alien:0,crossmgr:0};
+var state = {alien:null,crossmgr:null};
 
 $(document).ready(function(){
     init();
@@ -45,6 +45,13 @@ function addEvent(){
     $(".settings").change(function(){
         console.log("save");
         localStorage.setItem($(this).attr('id'),$(this).val());
+    });
+
+    //state receive
+    socket.on('state', (msg) => {
+        for (var key in msg){
+            state[key] = msg[key];
+        }
     });
 
     //state checker

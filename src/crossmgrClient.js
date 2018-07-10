@@ -31,19 +31,21 @@ module.exports = class crossmgrClient {
     var HOST = _host;
     var PORT = _port;
     client = new net.Socket();
-    console.log("START CONNECTING TO CROSSMGR...");
-    io.emit("log-crossmgr","START CONNECTING TO CROSSMGR...");
+    console.log("[CrossMgr] START CONNECTING...");
+    io.emit("log-crossmgr","START CONNECTING...");
     client.connect(PORT, HOST, function() {
-        console.log('CONNECTED TO: ' + HOST + ':' + PORT);
+        console.log('[CrossMgr] CONNECTED TO: ' + HOST + ':' + PORT);
         client.write("N0000AlienRelay\r");
+        io.emit("state",{crossmgr:1});
     });
     client.on('error', function(err) {
-        console.log('ERROR: ' + err.stack);
+        console.log('[CrossMgr] Connect ERROR: ' + err.stack);
         io.emit("log-crossmgr","ERROR:"+err.stack);
     });
     client.on('close', function() {
-        console.log('Connection closed');
+        console.log('[CrossMgr] Connection closed');
         io.emit("log-crossmgr",'Connection closed');
+        io.emit("state",{crossmgr:0});
     });
     client.on('data', function(data) {
         console.log('DATA: ' + data);
@@ -53,7 +55,7 @@ module.exports = class crossmgrClient {
             io.emit("log-crossmgr",text);
         }
         if (data.toString().substr(0,5) == "S0000"){
-            console.log("Ready to send data");
+            console.log("[CrossMgr] Ready to send data");
             io.emit("log-crossmgr","Ready to send data");
         }
     });

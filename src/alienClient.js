@@ -1,10 +1,13 @@
 "use strict";
 const Telnet = require('telnet-client')
+var ALIEN_HOST_ADDRESS;
+var io;
 
-const ALIEN_HOST_ADDRESS = "192.168.251.210"
 
 module.exports = class AlienClient {
-  init(onReady) {
+  init(onReady, _io, _ipaddr) {
+    io = _io;
+    ALIEN_HOST_ADDRESS = _ipaddr;
     this.onReady = onReady
     this.connection = new Telnet();
     this.telnet_params = {
@@ -26,15 +29,24 @@ module.exports = class AlienClient {
     this.connection.on('ready', function(prompt) {
       console.log(prompt)
       that.onReady()
+      io.emit("state",{alien:1});
+    })
+    this.connection.on('error', function() {
+        console.log('[Alien] ERROR')
+        io.emit('log-alien','Error: ');
+        that.connection.end();
     })
     this.connection.on('timeout', function() {
         console.log('socket timeout!')
         that.connection.end();
     })
     this.connection.on('close', function() {
-        console.log('connection closed');
+        console.log('[Alien] connection closed');
+        io.emit("state",{alien:0});
     })
 
+    console.log('[Alien] START CONNECTING...')
+    io.emit('log-alien','START CONNECTING...');
     this.connection.connect(this.telnet_params);
   }
 

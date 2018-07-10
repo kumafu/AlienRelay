@@ -22,6 +22,7 @@ module.exports = class RelayServer {
     cl.init(io);
     let pl = new packetlistener();
     pl.init(io, cl);
+    let ac = new alienClient();
     
     // for web client
     io.on('connection', function(socket){
@@ -32,11 +33,9 @@ module.exports = class RelayServer {
         //parse
         switch(msg.cmd){
             case "crossmgr-connect":
-                let ipaddr = msg.ipaddr;
-                cl.connect(ipaddr, 53135);
+                cl.connect(msg.ipaddr, 53135);
                 break;
             case "alien-connect":
-                let ac = new alienClient();
                 ac.init(function() {
                     // send 'info', when telnet connection is ready
                     ac.cmd('info', function(err, res) {
@@ -44,7 +43,7 @@ module.exports = class RelayServer {
                         console.log(res);
                         io.emit("log",res);
                     });
-                });
+                }, io, msg.ipaddr);
                 break;;
 
         }
