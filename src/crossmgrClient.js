@@ -67,6 +67,8 @@ module.exports = class crossmgrClient {
 
   sendData(tag, time, readCount, antenna) {
     let msg = this.format(tag, time, readCount, antenna)
+    console.log(`[CrossMgr] SendData: ${msg}`);
+    io.emit("log-crossmgr",`SendData: ${msg}`);
     this.send(msg)
   }
 
