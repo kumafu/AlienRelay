@@ -26,12 +26,6 @@ module.exports = class RelayServer {
     // for web client
     io.on('connection', function(socket){
       console.log('a user connected');
-      ////temp *OLD*
-      socket.on('login', (msg) => {
-        console.log('login: ' + msg);
-        //TODO: login sequence
-        io.emit("log","login...")
-      });
 
       socket.on('cmd', (msg) => {
         console.log('cmd: ' + msg.cmd);
