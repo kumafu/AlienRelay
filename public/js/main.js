@@ -1,5 +1,6 @@
 var socket;
 var state = {alien:null,crossmgr:null};
+var bAutoScorll = true;
 
 $(document).ready(function(){
     init();
@@ -30,15 +31,27 @@ function addEvent(){
         socket.emit("cmd",{"cmd":"crossmgr-connect","ipaddr":ipaddr});
     });
 
+    //autoscroll
+    $("#autoscroll").change(function(){
+        bAutoScorll = $(this).attr("checked");
+    });
+
+
     //receive
     socket.on('log-general', (msg) => {
-        $('#log-field-general').append(msg+"\n");
+        let elem = $('#log-field-general')
+        elem.append(msg+"\n");
+        if (bAutoScorll) elem.scrollTop(elem[0].scrollHeight - elem.height());
     });
     socket.on('log-alien', (msg) => {
-        $('#log-field-alien').append(msg+"\n");
+        let elem = $('#log-field-alien');
+        elem.append(msg+"\n");
+        if (bAutoScorll) elem.scrollTop(elem[0].scrollHeight - elem.height());
     });
     socket.on('log-crossmgr', (msg) => {
-        $('#log-field-crossmgr').append(msg+"\n");
+        let elem = $('#log-field-crossmgr');
+        elem.append(msg+"\n")
+        if (bAutoScorll) elem.scrollTop(elem[0].scrollHeight - elem.height());
     });
 
     //save localstorage
