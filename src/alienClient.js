@@ -29,22 +29,23 @@ module.exports = class AlienClient {
     this.connection.on('ready', function(prompt) {
       console.log(prompt)
       that.onReady()
-        console.log('[Alien] Connected')
-        io.emit('log-alien','Connected');
+      console.log('[Alien] Connected')
+      io.emit('log-alien','Connected');
       io.emit("state",{alien:1});
     })
     this.connection.on('error', function() {
-        console.log('[Alien] ERROR')
-        io.emit('log-alien','Error: ');
-        that.connection.end();
+      console.log('[Alien] ERROR')
+      io.emit('log-alien','Error: ');
+      that.connection.end();
     })
     this.connection.on('timeout', function() {
-        console.log('socket timeout!')
-        that.connection.end();
+      console.log('socket timeout!')
+      that.connection.end();
     })
     this.connection.on('close', function() {
-        console.log('[Alien] connection closed');
-        io.emit("state",{alien:0});
+      console.log('[Alien] Connection closed');
+      io.emit('log-alien','Connection closed');
+      io.emit("state",{alien:0});
     })
 
     console.log('[Alien] START CONNECTING...')
