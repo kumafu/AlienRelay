@@ -28,6 +28,11 @@ module.exports = class RelayServer {
       console.log('[Web] a user connected');
       init();
 
+      if (cl.bConnect) {
+        io.emit("log-crossmgr","Already Connected");
+        io.emit("state",{crossmgr:1});
+    }
+
       socket.on('cmd', (msg) => {
         console.log('[Web] cmd: ' + msg.cmd);
         //parse
