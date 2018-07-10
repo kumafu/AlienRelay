@@ -59,18 +59,19 @@ module.exports = class AlienClient {
     })
   }
 
-  cmds(commands, callback) {
+  cmds(commands, callback, lastCallback) {
     var that = this;
     var funcs = [];
     for(var i = 0; i < commands.length; i++) {
       funcs[i] = function() {
-        that.connection.exec(commands[i], callback);
+        that.connection.exec(commands[i], that.telnet_params,  callback);
       }
     }
 
     for (var i in funcs) {
       funcs[i]();
     }
+    lastCallback();
   }
 
   close() {

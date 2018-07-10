@@ -46,19 +46,17 @@ module.exports = class RelayServer {
                   commands[0] = "TagStreamMode=On";
                   commands[1] = "TagStreamAddress=" + msg.target + ":4000"
                   commands[2] = "TagStreamFormat=Text"
-                  ac.cmds(commands, function(err, res) {
+                  commands[3] = "info"
+                  ac.cmds(commands,  function(err, res) {
                     if (err) {
-                      console.log("error occurred: " + err);
+                      console.log("[Alien] Error: " + err);
+                      io.emit("log-alien", err);
                     } else {
-                      console.log("response: " + res);
+                      console.log("[Alien] Response: " + res);
+                      io.emit("log-alien", res);
                     }
-                  })
-                  // send 'info', when telnet connection is ready
-                  ac.cmd('info', function(err, res) {
-                    console.log(err);
-                    console.log(res);
-                    io.emit("log-alien",res);
-                    ac.close()
+                  }, function() {
+                    ac.close();
                   });
                 }, io, msg.ipaddr);
                 break;;
