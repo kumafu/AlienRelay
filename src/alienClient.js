@@ -66,7 +66,8 @@ module.exports = class AlienClient {
     f(0);
     function f(i){
         that.connection.exec(commands[i], that.telnet_params, function(err, res) {
-          console.log(commands[i]);
+          console.log("[Alien] cmd: " + commands[i]);
+          io.emit('log-alien','cmd: ' + commands[i]);
           callback(err, res);
           i++;
           if (i < commands.length) f(i);

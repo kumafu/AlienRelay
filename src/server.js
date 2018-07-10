@@ -50,10 +50,10 @@ module.exports = class RelayServer {
                   ac.cmds(commands,  function(err, res) {
                     if (err) {
                       console.log("[Alien] Error: " + err);
-                      io.emit("log-alien", err);
+                      io.emit("log-alien", "[Error] "+ err);
                     } else {
                       console.log("[Alien] Response: " + res);
-                      io.emit("log-alien", res);
+                      io.emit("log-alien", "[Response] "+res);
                     }
                   }, function() {
                     ac.close();
