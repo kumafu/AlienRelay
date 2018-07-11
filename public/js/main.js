@@ -1,5 +1,5 @@
 var socket;
-var state = {alien:null,crossmgr:null};
+var state = {alien:0,crossmgr:0};
 var bAutoScorll = true;
 
 $(document).ready(function(){
@@ -19,6 +19,7 @@ function addEvent(){
     $("#alien-connect-btn").click(function(){
         let ipaddr = $("#alien-ip-addr").val();
         let target = $("#alien-target-ip-addr").val();
+        $('#alien-connect-btn').attr("disabled","disabled")
         socket.emit("cmd",{"cmd":"alien-connect","ipaddr":ipaddr,"target":target});
     });
     $("#alien-send-cmd").click(function(){
@@ -29,7 +30,12 @@ function addEvent(){
     //crossmgr command
     $("#crossmgr-connect-btn").click(function(){
         let ipaddr = $("#crossmgr-ip-addr").val();
+        $('#crossmgr-connect-btn').attr("disabled","disabled")
         socket.emit("cmd",{"cmd":"crossmgr-connect","ipaddr":ipaddr});
+    });
+    $("#crossmgr-close-btn").click(function(){
+        $('#crossmgr-close-btn').attr("disabled","disabled")
+        socket.emit("cmd",{"cmd":"crossmgr-close"});
     });
 
     //autoscroll
@@ -72,13 +78,19 @@ function addEvent(){
     setInterval(function(){
         if (state.alien == 0){
             $('#log-field-alien').css("background-color","#fdd");
+            $('#alien-connect-btn').removeAttr("disabled");
         } else if (state.alien == 1){
             $('#log-field-alien').css("background-color","#dfd");
+            $('#alien-connect-btn').attr("disabled","disabled");
         }
         if (state.crossmgr == 0){
             $('#log-field-crossmgr').css("background-color","#fdd");
+            $('#crossmgr-connect-btn').removeAttr("disabled");
+            $('#crossmgr-close-btn').attr("disabled","disabled");
         } else if (state.crossmgr == 1){
             $('#log-field-crossmgr').css("background-color","#dfd");
+            $('#crossmgr-connect-btn').attr("disabled","disabled");
+            $('#crossmgr-close-btn').removeAttr("disabled");
         }
     },200);
 

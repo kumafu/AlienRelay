@@ -40,6 +40,9 @@ module.exports = class RelayServer {
             case "crossmgr-connect":
                 cl.connect(msg.ipaddr, 53135);
                 break;
+            case "crossmgr-close":
+                cl.close();
+                break;
             case "alien-connect":
                 ac.init(function() {
                   var commands = []

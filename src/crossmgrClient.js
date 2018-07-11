@@ -86,6 +86,13 @@ module.exports = class crossmgrClient {
     client.write(_msg + "\r");
   }
 
+  close(){
+    if (this.bConnect){
+      console.log("close")
+      client.end();
+    }
+  }
+
   format(tag, time, readCount, antenna){
     let datetime = new Date(time);
     let timeOnly = formatDate(datetime, "hh:mm:ss.SSS");
