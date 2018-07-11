@@ -6,6 +6,8 @@ module.exports = class packetlistener {
   constructor() {
     this.io;
     this.cl;
+    this.logs = {};
+    this.timeThresh = 10;
   }
 
 
@@ -50,7 +52,17 @@ module.exports = class packetlistener {
                             let ant = Number(eachSection[4].replace("Ant:",""));
                             console.log("[TagStream] Parsed Data:",tagID,date,count,ant);
                             that.io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
-                            if (that.cl.bConnect && !isNaN(tagID)) that.cl.sendData(tagID,date,count,ant);
+                            let datetime = new Date(date);
+                            if (!that.logs[tagID] || (that.logs[tagID] && datetime - that.logs[tagID].date > that.timeThresh * 1000)){
+                                if (that.cl.bConnect && !isNaN(tagID)) {
+                                    that.cl.sendData(tagID,date,count,ant);
+                                    that.logs[tagID] = {"date":datetime};
+                                }
+                            }else{
+                                console.log("[TagStream] Received but not sent:",tagID,date,count,ant);
+                                that.io.emit('log-general', `[TagStream] Received but not sent: ${tagID},${date},c:${count},a:${ant}`);
+
+                            }
                         }catch(e){
                             console.log("[TagStream] Parse error: " + e);
                             that.io.emit('log-general', '[TagStream] Parse error: ' + e);
@@ -70,6 +82,11 @@ module.exports = class packetlistener {
     }).listen(4000);
 
     return true;
+  }
+  setTimethresh(_val){
+    this.timeThresh = _val;
+    console.log('[TagStream] Set Timethresh: ' + _val + "sec.");
+    this.io.emit("log-general",'[TagStream] Set Timethresh: ' + _val + "sec.");
   }
 
 };

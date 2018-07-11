@@ -12,6 +12,7 @@ function init(){
     $("#alien-ip-addr").val(localStorage.getItem('alien-ip-addr'));
     $("#alien-target-ip-addr").val(localStorage.getItem('alien-target-ip-addr'));
     $("#crossmgr-ip-addr").val(localStorage.getItem('crossmgr-ip-addr'));
+    $("#timethresh").val(localStorage.getItem('timethresh'));
 }
 
 function addEvent(){
@@ -41,6 +42,15 @@ function addEvent(){
     //autoscroll
     $("#autoscroll").change(function(){
         bAutoScorll = $(this).attr("checked");
+    });
+
+    //timethresh
+    $("#timethresh").change(function(){
+        let timethresh = $(this).val();
+        timethresh = Number(timethresh);
+        if (isNaN(timethresh)) timethresh = 0;
+        socket.emit("cmd",{"cmd":"set-timethresh","val":timethresh});
+
     });
 
 

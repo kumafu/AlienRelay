@@ -62,7 +62,10 @@ module.exports = class RelayServer {
                     ac.close();
                   });
                 }, io, msg.ipaddr);
-                break;;
+                break;
+            case "set-timethresh":
+                pl.setTimethresh(Number(msg.val));
+                break;
         }
       });
     });
