@@ -42,14 +42,19 @@ module.exports = class packetlistener {
                 for (var line in strs){
                     //Format must be 'Text'
                     if (strs[line].indexOf("Tag:") != -1){
-                        let eachSection = strs[line].split(',');
-                        let tagID = Number(eachSection[0].replace("\0","").replace("Tag:0000 ",""));
-                        let date = eachSection[1].replace("Disc:","").trim();
-                        let count = Number(eachSection[3].replace("Count:",""));
-                        let ant = Number(eachSection[4].replace("Ant:",""));
-                        console.log("[TagStream] Parsed Data:",tagID,date,count,ant);
-                        that.io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
-                        if (that.cl.bConnect) that.cl.sendData(tagID,date,count,ant);
+                        try{
+                            let eachSection = strs[line].split(',');
+                            let tagID = Number(eachSection[0].replace("\0","").replace("Tag:","").replace(" ",""));
+                            let date = eachSection[1].replace("Disc:","").trim();
+                            let count = Number(eachSection[3].replace("Count:",""));
+                            let ant = Number(eachSection[4].replace("Ant:",""));
+                            console.log("[TagStream] Parsed Data:",tagID,date,count,ant);
+                            that.io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
+                            if (that.cl.bConnect && !isNaN(tagID)) that.cl.sendData(tagID,date,count,ant);
+                        }catch(e){
+                            console.log("[TagStream] Parse error: " + e);
+                            that.io.emit('log-general', '[TagStream] Parse error: ' + e);
+                        }
                     }
                 }
               }
