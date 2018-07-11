@@ -88,7 +88,6 @@ module.exports = class crossmgrClient {
 
   close(){
     if (this.bConnect){
-      console.log("close")
       client.end();
     }
   }
