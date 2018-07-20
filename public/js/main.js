@@ -32,6 +32,7 @@ function addEvent(){
     $("#crossmgr-connect-btn").click(function(){
         let ipaddr = $("#crossmgr-ip-addr").val();
         $('#crossmgr-connect-btn').attr("disabled","disabled")
+        $('#crossmgr-close-btn').removeAttr("disabled")
         socket.emit("cmd",{"cmd":"crossmgr-connect","ipaddr":ipaddr});
     });
     $("#crossmgr-close-btn").click(function(){
