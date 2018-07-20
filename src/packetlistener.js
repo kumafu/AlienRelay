@@ -50,8 +50,8 @@ module.exports = class packetlistener {
                             let date = eachSection[1].replace("Disc:","").trim();
                             let count = Number(eachSection[3].replace("Count:",""));
                             let ant = Number(eachSection[4].replace("Ant:",""));
-                            console.log("[TagStream] Parsed Data:",tagID,date,count,ant);
-                            that.io.emit('log-general', `[TagStream] Received: ${tagID},${date},c:${count},a:${ant}`);
+                            console.log("[TagStream] Parsed Data: ",TagStreamSock.remoteAddress,tagID,date,count,ant);
+                            //that.io.emit('log-general', `[TagStream] Received [${TagStreamSock.remoteAddress}]: ${tagID},${date},c:${count},a:${ant}`);
                             let datetime = new Date(date);
                             if (!that.logs[tagID] || (that.logs[tagID] && datetime - that.logs[tagID].date > that.timeThresh * 1000)){
                                 if (that.cl.bConnect && !isNaN(tagID)) {
@@ -60,7 +60,7 @@ module.exports = class packetlistener {
                                 }
                             }else{
                                 console.log("[TagStream] Received but not sent:",tagID,date,count,ant);
-                                that.io.emit('log-general', `[TagStream] Received but not sent: ${tagID},${date},c:${count},a:${ant}`);
+                                //that.io.emit('log-general', `[TagStream] Received but not sent: ${tagID},${date},c:${count},a:${ant}`);
 
                             }
                         }catch(e){
@@ -72,8 +72,8 @@ module.exports = class packetlistener {
               }
         });
         TagStreamSock.on('close', function(had_error) {
-            console.log('[TagStream] CLOSED. Had Error: ' + had_error);
-            that.io.emit("log-general",'[TagStream] CLOSED. Had Error: ' + had_error);
+            console.log('[TagStream] CLOSED. ' + TagStreamSock.remoteAddress + ' / Had Error:' + had_error);
+            that.io.emit("log-general",'[TagStream] CLOSED. ' + TagStreamSock.remoteAddress + ' / Had Error:' + had_error);
         });
         TagStreamSock.on('error', function(err) {
             console.log('[TagStream] ERROR: ' + err.stack);
